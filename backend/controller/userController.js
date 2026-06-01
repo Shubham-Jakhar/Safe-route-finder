@@ -27,6 +27,7 @@ exports.signUp = async (req, res) => {
         });
         await user.save();
         res.json({
+            success:true,
             message: "User registered successfully",
         });
 
@@ -45,14 +46,18 @@ exports.login = async (req, res) => {
         }
         const isMatch = await bcrypt.compare(password, user.password);
         if (!isMatch) {
-            return res.status(400).json({ message: "Invalid password" });
+            return res.status(400).json({ 
+                success:false, 
+                message: "Invalid password" 
+            });
         }
         const token = jwt.sign(
             { id: user._id },
             process.env.JWT_SECRET,
-            { expiresIn: "1d" }
+            { expiresIn: "29d" }
         );
         res.json({
+            success:true,
             message: "Login successful",
             token
         });
@@ -74,6 +79,19 @@ exports.verifyToken = (req, res, next) => {
     }
 };
 
+exports.userInfo = async (req, res) =>{
+    try{
+        const userId = req.userId;
+        const user = await User.findById(userId);
+        return res.status(200).json({
+            success:true,
+            user:user
+        });
+    }catch (error) {
+        return res.status(500).json({error:error.message});
+    }
+}
+
 exports.addContact = async (req, res) => {
     try {
         const {  name, phone, relation } = req.body;
@@ -86,6 +104,7 @@ exports.addContact = async (req, res) => {
         });
         await user.save();
         res.json({
+            success:true,
             message: "Emergency contact added",
             contacts: user.emergencyContacts
         });
@@ -98,7 +117,10 @@ exports.getContacts = async (req, res) => {
     try {
         const userId = req.userId;
         const user = await User.findById(userId);
-        res.json(user.emergencyContacts);
+        res.json({
+            success:true,
+            contacts: user.emergencyContacts
+        });
     } catch (error) {
         res.status(500).json({ error: error.message });
     }
@@ -106,7 +128,7 @@ exports.getContacts = async (req, res) => {
 
 exports.deleteContact = async (req, res) => {
     try {
-        const { contactId } = req.body;
+        const  contactId  = req.params.contactId;
         const userId = req.userId;
         const user = await User.findById(userId);
         user.emergencyContacts = user.emergencyContacts.filter(
@@ -114,7 +136,9 @@ exports.deleteContact = async (req, res) => {
         );
         await user.save();
         res.json({
-            message: "Contact deleted"
+            success:true,
+            message: "Contact deleted",
+            contacts: user.emergencyContacts
         });
     } catch (error) {
         res.status(500).json({ error: error.message });
@@ -134,6 +158,7 @@ exports.sendOtp = async (req, res) => {
                 channel: "sms"
             });
         res.json({
+            success:true,
             message: "OTP sent successfully"
         });
     } catch (error) {
@@ -155,10 +180,12 @@ exports.verifyOtp = async (req, res) => {
             });
         if (verificationCheck.status === "approved") {
             res.json({
+                success:true,
                 message: "Phone number verified successfully"
             });
         } else {
             res.status(400).json({
+                success:false,
                 message: "Invalid OTP"
             });
         }
@@ -177,12 +204,12 @@ exports.sendSOS = async (req, res) => {
         const user = await User.findById(userId);
         if (!user) {
             return res.status(404).json({
+                success:false,
                 message: "User not found"
             });
         }
         const mapLink = `https://maps.google.com/?q=${latitude},${longitude}`;
-        const message = `🚨 EMERGENCY ALERT ${user.name} needs help.
-        Location: ${mapLink}`;
+        const message = `EMERGENCY ALERT ${user.name} needs help. Location:${mapLink}`;
         for (let contact of user.emergencyContacts) {
             await client.messages.create({
                 body: message,
@@ -191,6 +218,7 @@ exports.sendSOS = async (req, res) => {
             });
         }
         res.json({
+            success:true,
             message: "Emergency alert sent to contacts"
         });
     } catch (error) {
@@ -205,7 +233,11 @@ exports.addUnsafeLocation = async (req, res) => {
     try {
         const location = new UnsafeLocation(req.body);
         const savedLocation = await location.save();
-        res.status(201).json(savedLocation);
+        res.status(200).json({
+            success:true,
+            message:"Unsafe location added",
+            savedLocation
+        });
     } catch (error) {
         res.status(500).json({ error: error.message });
     }
@@ -254,6 +286,7 @@ exports.getSafestRoute = async (req, res) => {
             }
         }
         res.json({
+            success:true,
             safetyScore: highestScore,
             safestRoute
         });

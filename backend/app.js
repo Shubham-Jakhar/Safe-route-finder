@@ -6,7 +6,6 @@ require('dotenv').config();
 
 const DB_PATH = process.env.DB_PATH;
 const userRouter = require('./routes/userRouter');
-const { body } = require('express-validator');
 
 app.get("/", (req, res) => {
   res.status(200).json({

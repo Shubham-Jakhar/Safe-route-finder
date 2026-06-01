@@ -13,6 +13,7 @@ userRouter.delete("/delete-emergency-contact/:contactId", verifyToken, userContr
 userRouter.post("/send-sos", verifyToken, userController.sendSOS);
 userRouter.post("/get-safest-route",verifyToken,userController.getSafestRoute);
 userRouter.post("/report-unsafe-location", verifyToken, userController.addUnsafeLocation);
+userRouter.get("/getUserInfo", verifyToken, userController.userInfo);
 
 
 module.exports = userRouter;

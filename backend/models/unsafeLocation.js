@@ -4,7 +4,6 @@ const unsafeLocationSchema = new mongoose.Schema({
   location: {
     type: {
       type: String,
-      enum: ["Point"],
       required: true
     },
     coordinates: {
@@ -17,6 +16,7 @@ const unsafeLocationSchema = new mongoose.Schema({
     enum: ["Low", "Medium", "High"],
     default: "Low"
   },
+  type:String,
   description: String,
   reportedAt: {
     type: Date,

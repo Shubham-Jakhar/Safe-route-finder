@@ -69,19 +69,11 @@ async function calculateSafetyScore(points) {
       }
     }
   });
-  score += Math.min(streetLights * 0.5, 10);
+  score += Math.min(streetLights * 0.2, 10);
   score += Math.min(shops * 1, 8);
   score += Math.min(policeStations * 10, 20);
-  score -= Math.min(unsafeCount * 4, 25);
+  score -= Math.min(unsafeCount * 10, 25);
   score = Math.max(0, Math.min(score, 100));
-
-  console.log({
-    streetLights,
-    shops,
-    policeStations,
-    unsafeCount,
-    score
-  });
 
   return score;
 
