@@ -13,7 +13,7 @@ app.get("/", (req, res) => {
   });
 });
 app.use("/user", userRouter);
-userRouter.get("/test", (req, res) => {
+app.use("/test", (req, res) => {
     res.json({ message: "user route working" });
 });
 app.use((req, res, next) => {
