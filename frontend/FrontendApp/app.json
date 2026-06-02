@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "FrontendApp",
-    "slug": "FrontendApp",
+    "name": "Safe Route Finder",
+    "slug": "safe-route-finder",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -20,10 +20,16 @@
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "edgeToEdgeEnabled": true
+      "edgeToEdgeEnabled": true,
+      "package": "com.shubhamjakhar.saferoutefinder"
     },
     "web": {
       "favicon": "./assets/favicon.png"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "c3a654cc-30cd-4b61-9019-9b8db7c7eaf8"
+      }
     }
   }
 }
